@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Document</title>
+</head>
+<body class="bg-zinc-100">
+
+<div
+        x-data="data()"
+        class="container mx-auto px-6 py-5">
+
+    <div class="mb-2">
+        <h1 class="text-3xl font-semibold mb-5">MAQE Forum</h1>
+        <span>Your current timezone is: Asia/Bangkok</span>
+    </div>
+
+    <div class="">
+        <template x-for="(post, index) in posts" :key="post.id">
+            <div class="mb-4" :class="index%2? 'bg-sky-200': 'bg-white'">
+                <div class="w-full inline-block border-b border-gray-200 py-2 px-2">
+                    <img class="rounded-full h-6 w-6 inline" :src="post.author.avatar_url"/>
+                    <span class="text-orange-600 text-sm"
+                          x-text="post.author.name">firstname lastname</span>
+                    <span class="text-gray-500 text-sm"> posted on </span>
+                    <span class="text-gray-500 text-sm" x-text="post.created_at">posted on Date ABC 09 2001 11:00</span>
+                </div>
+                <div class="flex py-4 px-2">
+                    <div class="flex-none w-64 mr-4">
+                        <img :src="post.image_url" alt=""/>
+                    </div>
+                    <div>
+                        <div class="mb-4">
+                            <span class="text-xl font-semibold " x-text="post.title"> Content Header </span>
+                        </div>
+                        <div class="post_content">
+                            <p x-text="post.body">
+                                foo bar
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</div>
+
+
+</body>
+
+<script>
+    function data() {
+        return {
+            posts: [],
+            authors: [],
+            async init() {
+                const postRes = await fetch("https://maqe.github.io/json/posts.json")
+                let posts = await postRes.json()
+
+                const authorRes = await fetch("https://maqe.github.io/json/authors.json")
+                let authors = await authorRes.json()
+                const authorKeyMap = authors.reduce((obj, item) => {
+                    return {
+                        ...obj,
+                        [item['id']]: item,
+                    };
+                }, {});
+                this.posts = posts.map(item => ({
+                    ...item,
+                    author: authorKeyMap[item.author_id]
+                }))
+            }
+        }
+    }
+</script>
+</html>
