@@ -13,6 +13,7 @@ def exec_command(s: str) -> tuple:
     direction = 0
     position = [0, 0]
     is_moving = False
+    move_direction = 1
     dig = ""
     l = len(s)
     for i in range(l):
@@ -21,12 +22,12 @@ def exec_command(s: str) -> tuple:
         # Move state
         if is_moving and ch.isdigit() and i == l-1:
             distance = int(dig+ch)
-            set_position(position, direction, distance)
+            set_position(position, direction, distance*move_direction)
         elif is_moving and ch.isdigit():
             dig += ch
         elif is_moving and not ch.isdigit():  # exec move and end
             distance = int(dig)
-            set_position(position, direction, distance)
+            set_position(position, direction, distance*move_direction)
             dig = ""
             is_moving = False
 
@@ -37,5 +38,9 @@ def exec_command(s: str) -> tuple:
             direction = (direction - 90) % 360
         elif ch == "W":  # start Move
             is_moving = True
+            move_direction = 1
+        elif ch == "B":  # start Move
+            is_moving = True
+            move_direction = -1
 
     return position, direction

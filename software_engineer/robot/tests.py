@@ -15,6 +15,11 @@ class TestDo(unittest.TestCase):
         self.assertEqual([100, 0], pos)
         self.assertEqual(90, heading)
 
+    def test_move_with_back_direction(self):
+        pos, heading = robot.exec_command("RB100")
+        self.assertEqual([-100, 0], pos)
+        self.assertEqual(90, heading)
+
 
 if __name__ == '__main__':
     unittest.main()
